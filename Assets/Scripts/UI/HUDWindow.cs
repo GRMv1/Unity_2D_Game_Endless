@@ -14,6 +14,8 @@ public class HUDWindow : MonoBehaviour
     private TMPro.TextMeshProUGUI HitCountTxt;
     [SerializeField]
     private Image LoadingScreen;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI objectiveText;
 
     [SerializeField]
     private Button button;
@@ -76,7 +78,7 @@ public class HUDWindow : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             timePlaying = TimeSpan.FromSeconds(elapsedTime);
-            string timePlayingStr = "Time: " + timePlaying.ToString("mm':'ss");
+            string timePlayingStr = "Time: " + timePlaying.ToString("ss'.'ff");
             TimerTxt.text = timePlayingStr;
             yield return null;
         }
@@ -85,6 +87,10 @@ public class HUDWindow : MonoBehaviour
     public void ActivateLoadingScreen()
     {
         LoadingScreen.gameObject.SetActive(true);
+    }
+    public void DeactivateLoadingScreen()
+    {
+        LoadingScreen.gameObject.SetActive(false);
     }
     public void FadeOutLoadingScreen()
     {
@@ -103,9 +109,12 @@ public class HUDWindow : MonoBehaviour
         {
             float normalizedTime = t / 2;
             LoadingScreen.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1 - normalizedTime);
+            //additional fade for text with main objective
+            objectiveText.color = new Color(objectiveText.color.r, objectiveText.color.g, objectiveText.color.b, 1 - normalizedTime);
             yield return null;
         }
         LoadingScreen.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
+        DeactivateLoadingScreen();
     }
     private IEnumerator FadeInLoadingScreenCoroutine()
     {

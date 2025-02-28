@@ -19,9 +19,13 @@ public class HighscoreTable : MonoBehaviour
 
     private void Start()
     {
+        var canvasScaler = GetComponentInParent<CanvasScaler>();
+        Vector2 referenceResolution = canvasScaler.referenceResolution;
+        Vector2 currentResolution = new Vector2(Screen.width, Screen.height);
+        var scaleFactor = currentResolution.y / referenceResolution.y;
         rt = GetComponent<RectTransform>();
         onScreenPosition = new Vector3(Screen.width - 5, transform.position.y, 0);
-        offScreenPosition = new Vector3(Screen.width + rt.rect.width, transform.position.y, 0);
+        offScreenPosition = new Vector3(Screen.width + rt.rect.width * scaleFactor, transform.position.y, 0);
         transform.position = offScreenPosition;
     }
 
@@ -41,7 +45,7 @@ public class HighscoreTable : MonoBehaviour
         }
     }
 
-    private void CreateScoreElement(int number, int time, int score, int hitCount)
+    private void CreateScoreElement(int number, float time, int score, int hitCount)
     {
         ScoreElement scoreElement = Instantiate(ScoreElementTemplate, ScoreContainer);
         scoreElement.SetValues(number, time, score, hitCount);

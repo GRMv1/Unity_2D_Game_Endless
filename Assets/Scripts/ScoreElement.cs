@@ -13,7 +13,7 @@ public class ScoreElement : MonoBehaviour
     [SerializeField]
     private TMPro.TextMeshProUGUI HitCountTxt;
 
-    public void SetValues(int number, int time, int score, int hitCount)
+    public void SetValues(int number, float time, int score, int hitCount)
     {
         NumberTxt.text = number.ToString();
         TimeTxt.text = time.ToString();

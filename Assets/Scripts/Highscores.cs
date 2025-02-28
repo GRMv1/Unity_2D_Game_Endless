@@ -9,7 +9,7 @@ public class Highscores
     [System.Serializable]
     public class ScoreElementSaveData
     {
-        public int Time;
+        public float Time;
         public int Score;
         public int HitCount;
     }

@@ -58,6 +58,9 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        Time.timeScale = 0;
+        CanvasGroup canvasGroup = MainMenu.Instance.GetComponent<CanvasGroup>();
+        canvasGroup.interactable = false;
         currentScoreElement = new Highscores.ScoreElementSaveData();
         highscores.scoreElemnentList.Add(currentScoreElement);
         StartCoroutine(LoadScene());
@@ -82,6 +85,9 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         SwapFont(settings.IsDefaultFont);
+        HUDWindow.Instance.FadeOutLoadingScreen();
+        yield return new WaitForSecondsRealtime(2);
+        Time.timeScale = 1;
     }
 
     private IEnumerator ReloadScene()
@@ -143,7 +149,9 @@ public class GameManager : MonoBehaviour
 
     public void UpdateCurrentScoreElement()
     {
-        currentScoreElement.Time = (int)HUDWindow.Instance.GetElapsedTime;
+        float value = HUDWindow.Instance.GetElapsedTime;
+        float roundedValue = Mathf.Round(value * 100f) / 100f;
+        currentScoreElement.Time = roundedValue;
     }
 
     public void PlayerGotHit()
