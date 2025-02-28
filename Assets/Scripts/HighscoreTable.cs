@@ -1,12 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HighscoreTable : MonoBehaviour
 {
-    public Transform ScoreContainer;
-    public ScoreElement ScoreElementTemplate;
+    [SerializeField]
+    private Transform ScoreContainer;
+    [SerializeField]
+    private ScoreElement ScoreElementTemplate;
+
     private List<ScoreElement> scoreElementsList;
+    private Vector3 offScreenPosition;
+    private Vector3 onScreenPosition;
+    private RectTransform rt;
+    private float duration = 1.0f;
+    private Coroutine coroutine;
+
+    private void Start()
+    {
+        rt = GetComponent<RectTransform>();
+        onScreenPosition = new Vector3(Screen.width - 5, transform.position.y, 0);
+        offScreenPosition = new Vector3(Screen.width + rt.rect.width, transform.position.y, 0);
+        transform.position = offScreenPosition;
+    }
 
     public void InitHighscoreTable(List<Highscores.ScoreElementSaveData> scoreList)
     {
@@ -29,5 +46,46 @@ public class HighscoreTable : MonoBehaviour
         ScoreElement scoreElement = Instantiate(ScoreElementTemplate, ScoreContainer);
         scoreElement.SetValues(number, time, score, hitCount);
         scoreElementsList.Add(scoreElement);
+    }
+    private IEnumerator ShowHideCoroutine(bool isVisible)
+    {
+        float elapsedTime = 0.0f;
+        Vector3 initialPosition = transform.position;
+        if (isVisible)
+        {
+            while(elapsedTime < duration)
+            {
+                elapsedTime += Time.unscaledDeltaTime;
+                transform.position = Vector3.Lerp(initialPosition, offScreenPosition, elapsedTime / duration);
+                yield return null;
+            }
+            transform.position = offScreenPosition;
+        }
+        else
+        {
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.unscaledDeltaTime;
+                transform.position = Vector3.Lerp(initialPosition, onScreenPosition, elapsedTime / duration);
+                yield return null;
+            }
+            transform.position = onScreenPosition;
+        }
+    }
+
+    public void ShowHideLeaderboard()
+    {
+        if(transform.position == offScreenPosition)
+        {
+            if (coroutine != null)
+                StopCoroutine(coroutine);
+            coroutine = StartCoroutine(ShowHideCoroutine(false));
+        }
+        else if(transform.position == onScreenPosition)
+        {
+            if (coroutine != null)
+                StopCoroutine(coroutine);
+            coroutine = StartCoroutine(ShowHideCoroutine(true));
+        }
     }
 }
