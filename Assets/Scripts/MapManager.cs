@@ -23,8 +23,10 @@ public class MapManager : MonoBehaviour
     private GameObject backgroundTile;
 
     private int[,] maze;
+    private List<Vector2Int> usedPositions;
 
     private static int BOUND_SIZE = 6;
+    private static int MAX_ATTEMPTS = 200;
 
     public static MapManager Instance
     {
@@ -39,6 +41,7 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         maze = new int[mazeWidth, mazeHeight];
+        usedPositions = new List<Vector2Int>();
         GenerateMaze();
         try
         {
@@ -114,6 +117,9 @@ public class MapManager : MonoBehaviour
         {
             for (int y = 0; y < mazeHeight; y++)
             {
+                //make sure to leave starting point clear
+                if (x == 0 && y == 0)
+                    continue;
                 if (maze[x, y] == 1)
                 {
                     foundPositions.Add(new Vector2Int(x, y));
@@ -127,7 +133,12 @@ public class MapManager : MonoBehaviour
         {
             for (int i = 0; i < coinAmount; i++)
             {
-                maze[foundPositions[Random.Range(0, foundPositions.Count)].x, foundPositions[Random.Range(0, foundPositions.Count)].x] = 2;
+                var uniqueVec = GetUniquePosition(foundPositions);
+
+                if (uniqueVec == new Vector2Int(-1, -1))
+                    throw new System.Exception("Couldn't find unique position for a coin");
+                else
+                    maze[uniqueVec.x, uniqueVec.y] = 2;
             }
         }
     }
@@ -139,6 +150,9 @@ public class MapManager : MonoBehaviour
         {
             for (int y = 0; y < mazeHeight; y++)
             {
+                //make sure to leave starting point clear
+                if (x == 0 && y == 0)
+                    continue;
                 if (maze[x, y] == 1)
                 {
                     foundPositions.Add(new Vector2Int(x, y));
@@ -151,7 +165,12 @@ public class MapManager : MonoBehaviour
         {
             for (int i = 0; i < obstacleTypeCount; i++)
             {
-                maze[foundPositions[Random.Range(0, foundPositions.Count)].x, foundPositions[Random.Range(0, foundPositions.Count)].x] = Random.Range(3, objects.Count);
+                var uniqueVec = GetUniquePosition(foundPositions);
+
+                if (uniqueVec == new Vector2Int(-1, -1))
+                    throw new System.Exception("Couldn't find unique position for an obstacle");
+                else
+                    maze[uniqueVec.x, uniqueVec.y] = Random.Range(3, objects.Count);
             }
         }
     }
@@ -196,5 +215,25 @@ public class MapManager : MonoBehaviour
             Instantiate(bound, new Vector3(j * BOUND_SIZE, -1 * BOUND_SIZE, 0), Quaternion.identity);
             Instantiate(bound, new Vector3(j * BOUND_SIZE, mazeHeight * BOUND_SIZE, 0), Quaternion.identity);
         }
+    }
+    private Vector2Int GetUniquePosition(List<Vector2Int> list)
+    {
+        for (int i = 0; i < MAX_ATTEMPTS; i++)
+        {
+            Vector2Int vec = GenerateRandomPos(list);
+
+            if (!usedPositions.Contains(vec))
+            {
+                usedPositions.Add(vec);
+                return vec;
+            }
+        }
+        return new Vector2Int(-1, -1);
+    }
+
+    private Vector2Int GenerateRandomPos(List<Vector2Int> list)
+    {
+        Vector2Int vec = list[Random.Range(0, list.Count)];
+        return vec;
     }
 }
