@@ -16,7 +16,6 @@ public class HUDWindow : MonoBehaviour
     private Image LoadingScreen;
     [SerializeField]
     private TMPro.TextMeshProUGUI objectiveText;
-
     [SerializeField]
     private Button button;
 

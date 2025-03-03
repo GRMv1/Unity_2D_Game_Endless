@@ -14,8 +14,9 @@ public class HighscoreTable : MonoBehaviour
     private Vector3 offScreenPosition;
     private Vector3 onScreenPosition;
     private RectTransform rt;
-    private float duration = 1.0f;
     private Coroutine coroutine;
+
+    private static float DURATION = 1.0f;
 
     private void Start()
     {
@@ -57,20 +58,20 @@ public class HighscoreTable : MonoBehaviour
         Vector3 initialPosition = transform.position;
         if (isVisible)
         {
-            while(elapsedTime < duration)
+            while(elapsedTime < DURATION)
             {
                 elapsedTime += Time.unscaledDeltaTime;
-                transform.position = Vector3.Lerp(initialPosition, offScreenPosition, elapsedTime / duration);
+                transform.position = Vector3.Lerp(initialPosition, offScreenPosition, elapsedTime / DURATION);
                 yield return null;
             }
             transform.position = offScreenPosition;
         }
         else
         {
-            while (elapsedTime < duration)
+            while (elapsedTime < DURATION)
             {
                 elapsedTime += Time.unscaledDeltaTime;
-                transform.position = Vector3.Lerp(initialPosition, onScreenPosition, elapsedTime / duration);
+                transform.position = Vector3.Lerp(initialPosition, onScreenPosition, elapsedTime / DURATION);
                 yield return null;
             }
             transform.position = onScreenPosition;

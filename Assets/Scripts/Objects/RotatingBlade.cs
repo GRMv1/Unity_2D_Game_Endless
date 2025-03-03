@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blade : MonoBehaviour
+public class RotatingBlade : MonoBehaviour
 {
     [SerializeField]
     private AudioSource audioSource;
+    [SerializeField]
+    private Transform bladeTransform;
+
+    private static int ROTATION_SPEED = 150;
     private void Start()
     {
         StartCoroutine(SpinCoroutine());
@@ -13,9 +17,10 @@ public class Blade : MonoBehaviour
 
     IEnumerator SpinCoroutine()
     {
-        while(true)
+        while (true)
         {
-            transform.Rotate(Vector3.forward, 150 * Time.deltaTime);
+            transform.Rotate(Vector3.forward, ROTATION_SPEED * Time.deltaTime);
+            bladeTransform.Rotate(Vector3.forward, ROTATION_SPEED * Time.deltaTime);
             yield return null;
         }
     }

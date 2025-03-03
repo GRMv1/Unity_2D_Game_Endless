@@ -6,14 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public event Action<bool> OnSettingChange;
+
     private Settings settings;
     private Highscores highscores;
-
     private Highscores.ScoreElementSaveData currentScoreElement;
 
     private static int MAX_SCORE = 100;
-
-    public event Action<bool> OnSettingChange;
 
     public Settings Settings
     {

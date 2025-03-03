@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     public HighscoreTable HighscoreTable;
-    public Image LoadingScreen;
 
+    [SerializeField]
+    public Image LoadingScreen;
     [SerializeField]
     private Slider volumeSlider;
     [SerializeField]
